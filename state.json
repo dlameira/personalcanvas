@@ -23,7 +23,7 @@
     {
       "id": 3,
       "title": "Ads Management",
-      "desc": "Sistema de briefings para anunciantes da Aurora e Ã�ndice",
+      "desc": "Sistema de briefings para anunciantes da Aurora e Índice",
       "cluster": "seiva",
       "status": "active",
       "hub": false,
@@ -43,7 +43,7 @@
     {
       "id": 5,
       "title": "Mapoteca",
-      "desc": "Plataforma para artistas plÃ¡sticos e escritores",
+      "desc": "Plataforma para artistas plásticos e escritores",
       "cluster": "seiva",
       "status": "paused",
       "hub": false,
@@ -53,7 +53,7 @@
     {
       "id": 6,
       "title": "Base de Livros",
-      "desc": "Bookwire API â€” wiki de livros e lanÃ§amentos",
+      "desc": "Bookwire API — wiki de livros e lançamentos",
       "cluster": "seiva",
       "status": "idea",
       "hub": false,
@@ -63,7 +63,7 @@
     {
       "id": 7,
       "title": "Asana ↔ Canvas",
-      "desc": "IntegraÃ§Ã£o com o Asana da Seiva",
+      "desc": "Integração com o Asana da Seiva",
       "cluster": "seiva",
       "status": "idea",
       "hub": false,
@@ -73,7 +73,7 @@
     {
       "id": 19,
       "title": "Projetos Pessoais",
-      "desc": "Trabalhos de autoria prÃ³pria",
+      "desc": "Trabalhos de autoria própria",
       "cluster": "pessoal",
       "status": "active",
       "hub": true,
@@ -93,7 +93,7 @@
     {
       "id": 9,
       "title": "Além das Árvores",
-      "desc": "Conto de fantasia â€” continuar e expandir",
+      "desc": "Conto de fantasia — continuar e expandir",
       "cluster": "pessoal",
       "status": "paused",
       "hub": false,
@@ -113,7 +113,7 @@
     {
       "id": 11,
       "title": "Cidade",
-      "desc": "Obra digital â€” cidade navegÃ¡vel, estilo adventure.",
+      "desc": "Obra digital — cidade navegável, estilo adventure.",
       "cluster": "pessoal",
       "status": "idea",
       "hub": false,
@@ -133,7 +133,7 @@
     {
       "id": 12,
       "title": "ArtCon",
-      "desc": "Evento com Erico Borgo, LaÃ­s Almeida, Martha Ribas (GL).",
+      "desc": "Evento com Erico Borgo, Laís Almeida, Martha Ribas (GL).",
       "cluster": "colab",
       "status": "active",
       "hub": false,
@@ -143,7 +143,7 @@
     {
       "id": 13,
       "title": "Bookshop Brasil",
-      "desc": "Projeto com Roberta Machado, FlÃ¡vio Moura e Martha Ribas.",
+      "desc": "Projeto com Roberta Machado, Flávio Moura e Martha Ribas.",
       "cluster": "colab",
       "status": "idea",
       "hub": false,
@@ -153,7 +153,7 @@
     {
       "id": 14,
       "title": "Social Reading",
-      "desc": "Biblioteca de contos com comentÃ¡rios colaborativos.",
+      "desc": "Biblioteca de contos com comentários colaborativos.",
       "cluster": "colab",
       "status": "active",
       "hub": false,
@@ -183,7 +183,7 @@
     {
       "id": 16,
       "title": "Vida do Livro",
-      "desc": "Curso de mercado editorial â†’ plataforma.",
+      "desc": "Curso de mercado editorial → plataforma.",
       "cluster": "editorial",
       "status": "active",
       "hub": false,
@@ -193,7 +193,7 @@
     {
       "id": 17,
       "title": "Clássicos",
-      "desc": "Retomar a ediÃ§Ã£o de clÃ¡ssicos literÃ¡rios.",
+      "desc": "Retomar a edição de clássicos literários.",
       "cluster": "editorial",
       "status": "idea",
       "hub": false,
@@ -213,7 +213,7 @@
     {
       "id": 22,
       "title": "Estudos",
-      "desc": "Aprendizado contÃ­nuo em diversas frentes",
+      "desc": "Aprendizado contínuo em diversas frentes",
       "cluster": "estudos",
       "status": "active",
       "hub": true,
@@ -223,7 +223,7 @@
     {
       "id": 23,
       "title": "Programação & IA",
-      "desc": "Vibe coding, APIs, agentes, automaÃ§Ãµes e LLMs",
+      "desc": "Vibe coding, APIs, agentes, automações e LLMs",
       "cluster": "estudos",
       "status": "active",
       "hub": false,
@@ -243,7 +243,7 @@
     {
       "id": 25,
       "title": "Leitura Técnica",
-      "desc": "Livros de referÃªncia sobre ediÃ§Ã£o, mercado e cultura",
+      "desc": "Livros de referência sobre edição, mercado e cultura",
       "cluster": "estudos",
       "status": "active",
       "hub": false,
