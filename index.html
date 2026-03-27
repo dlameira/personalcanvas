@@ -2319,7 +2319,10 @@ function undoPush(){
     undoStack.push({
       nodes:JSON.parse(JSON.stringify(cv.nodes||[])),
       connections:JSON.parse(JSON.stringify(cv.connections||[])),
-      spPositions:JSON.parse(JSON.stringify(state.spPositions||{}))
+      spPositions:JSON.parse(JSON.stringify(state.spPositions||{})),
+      sbPositions:JSON.parse(JSON.stringify(state.sbPositions||{})),
+      sbOrder:JSON.parse(JSON.stringify(state.sbOrder||{})),
+      sbVessels:JSON.parse(JSON.stringify(state.sbVessels||{}))
     });
     if(undoStack.length>UNDO_MAX) undoStack.shift();
   }catch(e){}
@@ -2331,9 +2334,13 @@ function undoPop(){
   cv.nodes=snap.nodes;
   cv.connections=snap.connections;
   state.spPositions=snap.spPositions;
+  if(snap.sbPositions) state.sbPositions=snap.sbPositions;
+  if(snap.sbOrder) state.sbOrder=snap.sbOrder;
+  if(snap.sbVessels) state.sbVessels=snap.sbVessels;
   scheduleSave();
   renderLevel();
   if(document.getElementById('sp-view').classList.contains('active')) renderSPCanvas();
+  if(document.getElementById('sb-view').classList.contains('active')) renderSBCanvas();
 }
 
 // ── VESSEL / CREATE ITEM ───────────────────────────────────────
@@ -2899,6 +2906,7 @@ function sbMakeDraggable(div,type,item){
   div.addEventListener('mousedown',e=>{
     if(e.button!==0) return;
     e.stopPropagation();
+    undoPush();
     dx=e.clientX;dy=e.clientY;
     sx=parseInt(div.style.left)||0;sy=parseInt(div.style.top)||0;
     moved=false;
@@ -3009,22 +3017,42 @@ function sbMakeVessel(canvas,label,count,x,y,w,h,type){
   hdr.appendChild(lbl);hdr.appendChild(cnt);
   v.appendChild(hdr);
 
-  // drag vessel
+  // drag vessel — cards inside move together
   let vdx=0,vdy=0,vsx=0,vsy=0;
   hdr.addEventListener('mousedown',e=>{
     if(e.button!==0) return;
     e.stopPropagation();
+    undoPush();
     vdx=e.clientX;vdy=e.clientY;
     vsx=parseInt(v.style.left);vsy=parseInt(v.style.top);
+    // snapshot card positions inside this vessel
+    const d=sbData();
+    const items=d[type]||[];
+    const cardSnaps=[];
+    items.forEach(it=>{
+      const card=document.querySelector(`.sb-card[data-sb-id="${it.id}"]`);
+      if(card) cardSnaps.push({el:card,sx:parseInt(card.style.left),sy:parseInt(card.style.top)});
+    });
     const onMove=ev=>{
-      v.style.left=(vsx+(ev.clientX-vdx)/sbView.scale)+'px';
-      v.style.top=(vsy+(ev.clientY-vdy)/sbView.scale)+'px';
+      const ddx=(ev.clientX-vdx)/sbView.scale, ddy=(ev.clientY-vdy)/sbView.scale;
+      v.style.left=(vsx+ddx)+'px';
+      v.style.top=(vsy+ddy)+'px';
+      cardSnaps.forEach(cs=>{
+        cs.el.style.left=(cs.sx+ddx)+'px';
+        cs.el.style.top=(cs.sy+ddy)+'px';
+      });
     };
     const onUp=()=>{
       window.removeEventListener('mousemove',onMove);
       window.removeEventListener('mouseup',onUp);
       if(!state.sbVessels) state.sbVessels={};
       state.sbVessels[type]={x:parseInt(v.style.left),y:parseInt(v.style.top),w:parseInt(v.style.width),h:parseInt(v.style.height)};
+      // update card positions
+      if(!state.sbPositions) state.sbPositions={};
+      cardSnaps.forEach(cs=>{
+        const id=cs.el.dataset.sbId;
+        state.sbPositions[type+'_'+id]={x:parseInt(cs.el.style.left),y:parseInt(cs.el.style.top)};
+      });
       scheduleSave();
     };
     window.addEventListener('mousemove',onMove);
@@ -3053,6 +3081,7 @@ function sbMakeVessel(canvas,label,count,x,y,w,h,type){
         window.removeEventListener('mouseup',onUp);
         if(!state.sbVessels) state.sbVessels={};
         state.sbVessels[type]={x:parseInt(v.style.left),y:parseInt(v.style.top),w:parseInt(v.style.width),h:parseInt(v.style.height)};
+        sbReflowVessel(type);
         scheduleSave();
       };
       window.addEventListener('mousemove',onMove);
