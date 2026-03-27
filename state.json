@@ -1,3 +1,549 @@
 {
-  "test": 1
+  "nodes": [
+    {
+      "id": 1,
+      "title": "SEIVA",
+      "desc": "Empresa editorial e cultural",
+      "cluster": "seiva",
+      "status": "active",
+      "hub": true,
+      "x": 158,
+      "y": -5
+    },
+    {
+      "id": 2,
+      "title": "Seiva Brain",
+      "desc": "Vault de conhecimento da Seiva para acesso via IA",
+      "cluster": "seiva",
+      "status": "active",
+      "hub": false,
+      "x": -231,
+      "y": -222
+    },
+    {
+      "id": 3,
+      "title": "Ads Management",
+      "desc": "Sistema de briefings para anunciantes da Aurora e Índice",
+      "cluster": "seiva",
+      "status": "active",
+      "hub": false,
+      "x": -231,
+      "y": -107
+    },
+    {
+      "id": 4,
+      "title": "Aurora / Índice",
+      "desc": "Sites das newsletters com curadoria e assinatura",
+      "cluster": "seiva",
+      "status": "idea",
+      "hub": false,
+      "x": -278,
+      "y": 9
+    },
+    {
+      "id": 5,
+      "title": "Mapoteca",
+      "desc": "Plataforma para artistas plásticos e escritores",
+      "cluster": "seiva",
+      "status": "paused",
+      "hub": false,
+      "x": -234,
+      "y": 240
+    },
+    {
+      "id": 6,
+      "title": "Base de Livros",
+      "desc": "Bookwire API — wiki de livros e lançamentos",
+      "cluster": "seiva",
+      "status": "idea",
+      "hub": false,
+      "x": -278,
+      "y": 119
+    },
+    {
+      "id": 7,
+      "title": "Asana ↔ Canvas",
+      "desc": "Integração com o Asana da Seiva",
+      "cluster": "seiva",
+      "status": "idea",
+      "hub": false,
+      "x": -9,
+      "y": 354
+    },
+    {
+      "id": 19,
+      "title": "Projetos Pessoais",
+      "desc": "Trabalhos de autoria própria",
+      "cluster": "pessoal",
+      "status": "active",
+      "hub": true,
+      "x": 1148,
+      "y": 227
+    },
+    {
+      "id": 8,
+      "title": "Site Pessoal",
+      "desc": "Livros editados, textos, obras, clipping. CMS via Directus/Railway.",
+      "cluster": "pessoal",
+      "status": "active",
+      "hub": false,
+      "x": 780,
+      "y": 50
+    },
+    {
+      "id": 9,
+      "title": "Além das Árvores",
+      "desc": "Conto de fantasia — continuar e expandir",
+      "cluster": "pessoal",
+      "status": "paused",
+      "hub": false,
+      "x": 782,
+      "y": 161
+    },
+    {
+      "id": 10,
+      "title": "Livrin",
+      "desc": "Livro infantojuvenil no Figma/Photoshop.",
+      "cluster": "pessoal",
+      "status": "active",
+      "hub": false,
+      "x": 780,
+      "y": 264
+    },
+    {
+      "id": 11,
+      "title": "Cidade",
+      "desc": "Obra digital — cidade navegável, estilo adventure.",
+      "cluster": "pessoal",
+      "status": "idea",
+      "hub": false,
+      "x": 779,
+      "y": 356
+    },
+    {
+      "id": 20,
+      "title": "Colaborativos",
+      "desc": "Projetos em parceria com outros criadores",
+      "cluster": "colab",
+      "status": "active",
+      "hub": true,
+      "x": 164,
+      "y": 486
+    },
+    {
+      "id": 12,
+      "title": "ArtCon",
+      "desc": "Evento com Erico Borgo, Laís Almeida, Martha Ribas (GL).",
+      "cluster": "colab",
+      "status": "active",
+      "hub": false,
+      "x": -256,
+      "y": 523
+    },
+    {
+      "id": 13,
+      "title": "Bookshop Brasil",
+      "desc": "Projeto com Roberta Machado, Flávio Moura e Martha Ribas.",
+      "cluster": "colab",
+      "status": "idea",
+      "hub": false,
+      "x": -257,
+      "y": 660
+    },
+    {
+      "id": 14,
+      "title": "Social Reading",
+      "desc": "Biblioteca de contos com comentários colaborativos.",
+      "cluster": "colab",
+      "status": "active",
+      "hub": false,
+      "x": -257,
+      "y": 775
+    },
+    {
+      "id": 21,
+      "title": "Editorial / Universo",
+      "desc": "Projetos editoriais e ficcionais",
+      "cluster": "editorial",
+      "status": "active",
+      "hub": true,
+      "x": 672,
+      "y": 576
+    },
+    {
+      "id": 15,
+      "title": "Telecosmo",
+      "desc": "Marca e universo ficcional infantojuvenil.",
+      "cluster": "editorial",
+      "status": "idea",
+      "hub": false,
+      "x": 1020,
+      "y": 570
+    },
+    {
+      "id": 16,
+      "title": "Vida do Livro",
+      "desc": "Curso de mercado editorial → plataforma.",
+      "cluster": "editorial",
+      "status": "active",
+      "hub": false,
+      "x": 1020,
+      "y": 685
+    },
+    {
+      "id": 17,
+      "title": "Clássicos",
+      "desc": "Retomar a edição de clássicos literários.",
+      "cluster": "editorial",
+      "status": "idea",
+      "hub": false,
+      "x": 1020,
+      "y": 800
+    },
+    {
+      "id": 18,
+      "title": "Folhetim",
+      "desc": "Pequenas novelas ultra-comerciais.",
+      "cluster": "editorial",
+      "status": "idea",
+      "hub": false,
+      "x": 1020,
+      "y": 915
+    },
+    {
+      "id": 22,
+      "title": "Estudos",
+      "desc": "Aprendizado contínuo em diversas frentes",
+      "cluster": "estudos",
+      "status": "active",
+      "hub": true,
+      "x": 519,
+      "y": 788
+    },
+    {
+      "id": 23,
+      "title": "Programação & IA",
+      "desc": "Vibe coding, APIs, agentes, automações e LLMs",
+      "cluster": "estudos",
+      "status": "active",
+      "hub": false,
+      "x": 161,
+      "y": 742
+    },
+    {
+      "id": 24,
+      "title": "Design & UX",
+      "desc": "Interfaces, tipografia, identidade visual",
+      "cluster": "estudos",
+      "status": "paused",
+      "hub": false,
+      "x": 161,
+      "y": 857
+    },
+    {
+      "id": 25,
+      "title": "Leitura Técnica",
+      "desc": "Livros de referência sobre edição, mercado e cultura",
+      "cluster": "estudos",
+      "status": "active",
+      "hub": false,
+      "x": 161,
+      "y": 972
+    },
+    {
+      "id": 501,
+      "title": "memória",
+      "desc": "",
+      "cluster": "pessoal",
+      "status": "active",
+      "hub": false,
+      "x": 1143,
+      "y": 63
+    }
+  ],
+  "connections": [
+    {
+      "id": "c1",
+      "from": 1,
+      "to": 2
+    },
+    {
+      "id": "c2",
+      "from": 1,
+      "to": 3
+    },
+    {
+      "id": "c3",
+      "from": 1,
+      "to": 4
+    },
+    {
+      "id": "c4",
+      "from": 1,
+      "to": 5
+    },
+    {
+      "id": "c5",
+      "from": 1,
+      "to": 6
+    },
+    {
+      "id": "c6",
+      "from": 1,
+      "to": 7
+    },
+    {
+      "id": "c10",
+      "from": 19,
+      "to": 8
+    },
+    {
+      "id": "c11",
+      "from": 19,
+      "to": 9
+    },
+    {
+      "id": "c12",
+      "from": 19,
+      "to": 10
+    },
+    {
+      "id": "c13",
+      "from": 19,
+      "to": 11
+    },
+    {
+      "id": "c20",
+      "from": 20,
+      "to": 12
+    },
+    {
+      "id": "c21",
+      "from": 20,
+      "to": 13
+    },
+    {
+      "id": "c22",
+      "from": 20,
+      "to": 14
+    },
+    {
+      "id": "c31",
+      "from": 21,
+      "to": 16
+    },
+    {
+      "id": "c32",
+      "from": 21,
+      "to": 17
+    },
+    {
+      "id": "c33",
+      "from": 21,
+      "to": 18
+    },
+    {
+      "id": "c40",
+      "from": 22,
+      "to": 23
+    },
+    {
+      "id": "c41",
+      "from": 22,
+      "to": 24
+    },
+    {
+      "id": "c42",
+      "from": 22,
+      "to": 25
+    },
+    {
+      "id": "c500",
+      "from": 21,
+      "to": 15,
+      "dashed": false
+    },
+    {
+      "id": 502,
+      "from": 19,
+      "to": 501,
+      "dashed": false
+    }
+  ],
+  "nextId": 503,
+  "homeView": {
+    "x": 29.70444857520073,
+    "y": 19.77294910406374,
+    "scale": 0.6431986107625098
+  },
+  "subCanvases": {
+    "8": {
+      "nodes": [
+        {
+          "id": 2000,
+          "title": "SITE PESSOAL",
+          "desc": "Hub central do site pessoal",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": true,
+          "x": 490,
+          "y": 340
+        },
+        {
+          "id": 2001,
+          "title": "GitHub",
+          "desc": "Repositórios públicos. Clique direito → Sincronizar.",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": false,
+          "x": 140,
+          "y": 180,
+          "type": "github",
+          "config": {
+            "username": ""
+          }
+        },
+        {
+          "id": 2002,
+          "title": "Directus CMS",
+          "desc": "Conteúdo do CMS. Clique direito → Configurar.",
+          "cluster": "pessoal",
+          "status": "idea",
+          "hub": false,
+          "x": 140,
+          "y": 440,
+          "type": "directus",
+          "config": {
+            "url": "",
+            "token": "",
+            "collection": "posts"
+          }
+        },
+        {
+          "id": 2003,
+          "title": "Livros Editados",
+          "desc": "Catálogo de livros editados pela Seiva",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": false,
+          "x": 840,
+          "y": 100
+        },
+        {
+          "id": 2004,
+          "title": "Textos",
+          "desc": "Artigos, ensaios e textos publicados",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": false,
+          "x": 840,
+          "y": 240
+        },
+        {
+          "id": 2005,
+          "title": "Obras Pessoais",
+          "desc": "Projetos artísticos e literários autorais",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": false,
+          "x": 840,
+          "y": 380
+        },
+        {
+          "id": 2006,
+          "title": "Clipping",
+          "desc": "Notícias e menções na mídia",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": false,
+          "x": 840,
+          "y": 520
+        },
+        {
+          "id": 2007,
+          "title": "Indicações",
+          "desc": "Curadoria de livros, filmes, músicas",
+          "cluster": "pessoal",
+          "status": "active",
+          "hub": false,
+          "x": 840,
+          "y": 660
+        }
+      ],
+      "connections": [
+        {
+          "id": "sp1",
+          "from": 2000,
+          "to": 2001
+        },
+        {
+          "id": "sp2",
+          "from": 2000,
+          "to": 2002
+        },
+        {
+          "id": "sp3",
+          "from": 2000,
+          "to": 2003
+        },
+        {
+          "id": "sp4",
+          "from": 2000,
+          "to": 2004
+        },
+        {
+          "id": "sp5",
+          "from": 2000,
+          "to": 2005
+        },
+        {
+          "id": "sp6",
+          "from": 2000,
+          "to": 2006
+        },
+        {
+          "id": "sp7",
+          "from": 2000,
+          "to": 2007
+        }
+      ]
+    },
+    "12": {
+      "nodes": [],
+      "connections": [],
+      "view": {
+        "x": 173.5316850000001,
+        "y": -137.5409400000002,
+        "scale": 0.6442040000000002
+      }
+    },
+    "501": {
+      "nodes": [
+        {
+          "id": 501,
+          "title": "memória",
+          "desc": "",
+          "cluster": "seiva",
+          "status": "active",
+          "hub": false,
+          "x": 490,
+          "y": 320
+        }
+      ],
+      "connections": [],
+      "view": {
+        "x": 124.69060334591256,
+        "y": 169.10608877429163,
+        "scale": 0.520990874717633
+      }
+    }
+  },
+  "spConfig": {
+    "url": "https://directus-production-afdd.up.railway.app",
+    "token": "ynOx8xSSe-PVHMUBIlz0nG9YetXgAxU5",
+    "colLivros": "livros",
+    "colObras": "obras",
+    "colTextos": "escritos",
+    "colDrops": "drops"
+  }
 }
