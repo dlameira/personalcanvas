@@ -2658,14 +2658,8 @@ function hideMemoryView(){
 async function loadMemory(){
   const grid=document.getElementById('mem-grid');
   grid.innerHTML='<div style="font-family:var(--mono);font-size:9px;color:#2a2a2a;padding:20px;letter-spacing:.1em">carregando...</div>';
-  try{
-    const r=await fetch('./CLAUDE.md?v='+Date.now());
-    if(!r.ok) throw new Error('not found');
-    const text=await r.text();
-    renderMemory(text);
-  }catch(e){
-    grid.innerHTML='<div style="font-family:var(--mono);font-size:9px;color:#444;padding:20px">CLAUDE.md não encontrado na pasta do projeto.</div>';
-  }
+  if(state.memory){renderMemory(state.memory);return;}
+  grid.innerHTML='<div style="font-family:var(--mono);font-size:9px;color:#444;padding:20px">memória não encontrada.</div>';
 }
 function renderMemory(md){
   const grid=document.getElementById('mem-grid');
@@ -2674,19 +2668,17 @@ function renderMemory(md){
   const saveBtn=document.getElementById('mem-save-btn');
   let dirty=false;
   function markDirty(){dirty=true;if(saveBtn)saveBtn.style.opacity='1';}
-  async function saveMemory(){
-    // reconstruct markdown from cards
+  function saveMemory(){
     const sections=[...grid.querySelectorAll('.mem-card')].map(c=>{
       const t=c.querySelector('.mem-card-title').textContent;
       const b=c.querySelector('.mem-card-ta').value;
       return `## ${t}\n${b}`;
     });
-    const full=sections.join('\n\n');
-    try{
-      await fetch('/save-memory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:full})});
-      dirty=false;if(saveBtn){saveBtn.style.opacity='0.3';saveBtn.textContent='salvo ✓';}
-      setTimeout(()=>{if(saveBtn)saveBtn.textContent='salvar';},1500);
-    }catch(e){alert('Erro ao salvar. Servidor rodando?');}
+    state.memory=sections.join('\n\n');
+    scheduleSave();
+    dirty=false;
+    if(saveBtn){saveBtn.style.opacity='0.3';saveBtn.textContent='salvo ✓';}
+    setTimeout(()=>{if(saveBtn)saveBtn.textContent='salvar';},1500);
   }
   if(saveBtn){saveBtn.style.opacity='0.3';saveBtn.onclick=saveMemory;}
   raw.forEach((section,i)=>{
