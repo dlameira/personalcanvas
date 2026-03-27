@@ -77,8 +77,8 @@
       "cluster": "pessoal",
       "status": "active",
       "hub": true,
-      "x": 1148,
-      "y": 227
+      "x": 707,
+      "y": 131
     },
     {
       "id": 8,
@@ -87,8 +87,8 @@
       "cluster": "pessoal",
       "status": "active",
       "hub": false,
-      "x": 780,
-      "y": 50
+      "x": 1132,
+      "y": -12
     },
     {
       "id": 9,
@@ -97,8 +97,8 @@
       "cluster": "pessoal",
       "status": "paused",
       "hub": false,
-      "x": 782,
-      "y": 161
+      "x": 1134,
+      "y": 99
     },
     {
       "id": 10,
@@ -107,8 +107,8 @@
       "cluster": "pessoal",
       "status": "active",
       "hub": false,
-      "x": 780,
-      "y": 264
+      "x": 1132,
+      "y": 202
     },
     {
       "id": 11,
@@ -117,8 +117,8 @@
       "cluster": "pessoal",
       "status": "idea",
       "hub": false,
-      "x": 779,
-      "y": 356
+      "x": 1131,
+      "y": 294
     },
     {
       "id": 20,
@@ -257,8 +257,8 @@
       "cluster": "pessoal",
       "status": "active",
       "hub": false,
-      "x": 1143,
-      "y": 63
+      "x": 702,
+      "y": -33
     }
   ],
   "connections": [
