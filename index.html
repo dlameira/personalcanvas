@@ -449,6 +449,15 @@ body.ac-mode #ac-minimap{display:block;}
 #gh-save-btn[data-status="saved"]{display:block!important;color:var(--green);border-color:var(--green);}
 #gh-save-btn[data-status="error"]{display:block!important;color:#c44;border-color:#c44;}
 #gh-save-btn[data-status="idle"]{display:none!important;}
+/* ── TOAST ── */
+#toast-container{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none;}
+.toast{font-family:var(--mono);font-size:10px;color:#bbb;background:#111;border:1px solid #1e1e1e;border-radius:5px;padding:8px 14px;box-shadow:0 8px 24px rgba(0,0,0,.6);opacity:0;transform:translateX(30px);animation:toastIn .25s ease forwards;pointer-events:auto;}
+.toast.out{animation:toastOut .2s ease forwards;}
+@keyframes toastIn{to{opacity:1;transform:translateX(0);}}
+@keyframes toastOut{to{opacity:0;transform:translateX(30px);}}
+/* ── SB CROSS-LINKS ── */
+.sb-crosslink{display:inline-block;font-family:var(--mono);font-size:7.5px;color:rgba(74,158,255,.6);cursor:pointer;padding:2px 7px;border:1px solid rgba(74,158,255,.15);border-radius:3px;margin:2px 3px 2px 0;transition:all .12s;text-decoration:none;}
+.sb-crosslink:hover{color:rgba(74,158,255,.9);border-color:rgba(74,158,255,.4);background:rgba(74,158,255,.05);}
 </style>
 </head>
 <body>
@@ -832,6 +841,15 @@ async function loadState(){
   // 2. localStorage cache
   try{const s=localStorage.getItem(SK);if(s){const p=JSON.parse(s);if(p.nodes?.length){state=p;if(!state.subCanvases)state.subCanvases={};normalizeNodeTitles(state);return true;}}}catch(e){}
   return false;
+}
+
+// ── Toast notifications (non-blocking) ──
+function showToast(msg,duration=3000){
+  let c=document.getElementById('toast-container');
+  if(!c){c=document.createElement('div');c.id='toast-container';document.body.appendChild(c);}
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),250);},duration);
 }
 
 let saveT=null;
@@ -2089,7 +2107,7 @@ async function syncSP(showAlert=true){
   if(btn){btn.textContent='⟳ sincronizar';btn.disabled=false;}
   if(showAlert){
     const total=[d.livros,d.obras,d.textos,d.drops].reduce((a,x)=>a+(x?.length||0),0);
-    alert(`✓ ${total} itens carregados`);
+    showToast(`✓ ${total} itens carregados`);
   }
 }
 
@@ -2191,7 +2209,7 @@ async function syncGitHub(node){
       state.subCanvases[node.id]={nodes,connections:conns};
       scheduleSave();
       if(navStack[navStack.length-1]===node.id)renderLevel();
-      alert('✓ '+repoFilter+' — '+commits.length+' commits carregados');
+      showToast('✓ '+repoFilter+' — '+commits.length+' commits carregados');
     } else {
       // All repos mode
       const res=await fetch('https://api.github.com/users/'+username+'/repos?sort=updated&per_page=30&type=public');
@@ -2213,9 +2231,9 @@ async function syncGitHub(node){
       state.subCanvases[node.id]={nodes,connections:conns};
       scheduleSave();
       if(navStack[navStack.length-1]===node.id)renderLevel();
-      alert('✓ '+repos.length+' repositórios sincronizados de @'+username);
+      showToast('✓ '+repos.length+' repositórios sincronizados de @'+username);
     }
-  }catch(err){alert('Erro ao sincronizar GitHub: '+err.message);}
+  }catch(err){showToast('Erro ao sincronizar GitHub: '+err.message);}
 }
 
 async function syncDirectus(node){
@@ -2245,13 +2263,13 @@ async function syncDirectus(node){
     state.subCanvases[node.id]={nodes,connections:conns};
     scheduleSave();
     if(navStack[navStack.length-1]===node.id)renderLevel();
-    alert('✓ '+items.length+' itens sincronizados de /'+cfg.collection);
-  }catch(err){alert('Erro ao sincronizar Directus: '+err.message);}
+    showToast('✓ '+items.length+' itens sincronizados de /'+cfg.collection);
+  }catch(err){showToast('Erro ao sincronizar Directus: '+err.message);}
 }
 
 // ── EXPORT / IMPORT ───────────────────────────────────────────
 function exportJSON(){const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='canvas.json';a.click();}
-function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.addEventListener('change',()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const p=JSON.parse(e.target.result);if(p.nodes){state=p;if(!state.subCanvases)state.subCanvases={};navStack=[];renderLevel();buildClusterList();fitAll();scheduleSave();}}catch(err){alert('Arquivo inválido.');}};r.readAsText(f);});inp.click();}
+function importJSON(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.addEventListener('change',()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const p=JSON.parse(e.target.result);if(p.nodes){state=p;if(!state.subCanvases)state.subCanvases={};navStack=[];renderLevel();buildClusterList();fitAll();scheduleSave();}}catch(err){showToast('Arquivo inválido.');}};r.readAsText(f);});inp.click();}
 
 // ── CONNECTION HOVER (bezier proximity) ──────────────────────
 function bezierPt(ax,ay,bx,by,t){
@@ -2448,7 +2466,7 @@ async function confirmSPCreate(){
   const cfg=spCfg();const type=spCreateType;if(!type)return;
   const data={};
   (SP_FIELDS[type]||[]).forEach(f=>{const el=document.getElementById('spcf-'+f.k);if(el&&el.value.trim())data[f.k]=el.value.trim();});
-  if(!data.title){alert('Título obrigatório');return;}
+  if(!data.title){showToast('Título obrigatório');return;}
   if(type==='textos') data.tipo='escrito';
   const btn=document.getElementById('sp-create-confirm');
   btn.textContent='criando...';btn.disabled=true;
@@ -2458,7 +2476,7 @@ async function confirmSPCreate(){
     document.getElementById('sp-create-overlay').classList.remove('open');
     spCreateType=null;
     syncSP(false);
-  }catch(err){alert('Erro ao criar: '+err.message);}
+  }catch(err){showToast('Erro ao criar: '+err.message);}
   finally{btn.textContent='criar no cms ↑';btn.disabled=false;}
 }
 
@@ -2674,7 +2692,7 @@ function parseYAMLFrontmatter(content){
   return {meta,body};
 }
 
-// ── GitHub API fetch ──
+// ── GitHub API fetch (recursive for subdirs) ──
 async function sbFetchDir(path){
   const cfg=sbCfg();
   if(!cfg.token||!cfg.repo) return [];
@@ -2682,7 +2700,12 @@ async function sbFetchDir(path){
   try{
     const r=await fetch(url,{headers:{'Authorization':'token '+cfg.token,'Accept':'application/vnd.github.v3+json'}});
     if(!r.ok) return [];
-    return await r.json();
+    const items=await r.json();
+    // Recurse into subdirectories
+    const dirs=items.filter(i=>i.type==='dir');
+    if(dirs.length===0) return items;
+    const subResults=await Promise.all(dirs.map(d=>sbFetchDir(d.path)));
+    return items.filter(i=>i.type!=='dir').concat(subResults.flat());
   }catch{return [];}
 }
 
@@ -2724,7 +2747,7 @@ async function syncSB(showAlert=true){
 
   renderSBCanvas();scheduleSave();
   if(btn){btn.textContent='⟳';btn.style.pointerEvents='';}
-  if(showAlert) alert('✓ '+total+' itens carregados do Seiva Brain');
+  if(showAlert) showToast('✓ '+total+' itens carregados do Seiva Brain');
 }
 
 // ── SB Canvas setup (pan/zoom/select) ──
@@ -2816,7 +2839,61 @@ const SB_CARD_DIMS={
   transcricoes:{w:280,h:56,gap:5},
 };
 
-// ── Make card draggable ──
+// ── Reflow cards inside a vessel ──
+function sbReflowVessel(vesselType){
+  const d=sbData();
+  const items=d[vesselType]||[];
+  if(!items.length) return;
+  const vEl=sbVesselEls[vesselType];
+  if(!vEl) return;
+  const dim=SB_CARD_DIMS[vesselType]||{w:180,h:52,gap:5};
+  const HDR=28,PAD=10;
+  const vx=parseInt(vEl.style.left), vy=parseInt(vEl.style.top), vw=parseInt(vEl.style.width);
+  const innerW=vw-2*PAD;
+  const cols=Math.max(1,Math.floor((innerW+dim.gap)/(dim.w+dim.gap)));
+
+  // Get order from state or default
+  if(!state.sbOrder) state.sbOrder={};
+  let order=state.sbOrder[vesselType];
+  if(!order||order.length!==items.length){
+    order=items.map(it=>it.id);
+    state.sbOrder[vesselType]=order;
+  }
+
+  // Reposition all cards in grid order
+  order.forEach((id,i)=>{
+    const card=document.querySelector(`.sb-card[data-sb-id="${id}"]`);
+    if(!card) return;
+    const col=i%cols, row=Math.floor(i/cols);
+    const cx=vx+PAD+col*(dim.w+dim.gap);
+    const cy=vy+HDR+PAD+row*(dim.h+dim.gap);
+    card.style.left=cx+'px';card.style.top=cy+'px';
+  });
+
+  // Clear saved positions for this type (grid handles it now)
+  if(state.sbPositions){
+    order.forEach(id=>{ delete state.sbPositions[vesselType+'_'+id]; });
+  }
+
+  // Auto-resize vessel height
+  const rows=Math.ceil(order.length/cols);
+  const newH=HDR+PAD+rows*(dim.h+dim.gap)+PAD;
+  vEl.style.height=Math.max(newH,80)+'px';
+  if(!state.sbVessels) state.sbVessels={};
+  state.sbVessels[vesselType]={x:vx,y:vy,w:vw,h:Math.max(newH,80)};
+}
+
+// Find which vessel a point falls inside
+function sbFindVesselAt(px,py){
+  for(const [type,vEl] of Object.entries(sbVesselEls)){
+    const vx=parseInt(vEl.style.left),vy=parseInt(vEl.style.top);
+    const vw=parseInt(vEl.style.width),vh=parseInt(vEl.style.height);
+    if(px>=vx&&px<=vx+vw&&py>=vy&&py<=vy+vh) return type;
+  }
+  return null;
+}
+
+// ── Make card draggable with reflow ──
 function sbMakeDraggable(div,type,item){
   let dx=0,dy=0,sx=0,sy=0,moved=false;
   div.addEventListener('mousedown',e=>{
@@ -2825,6 +2902,7 @@ function sbMakeDraggable(div,type,item){
     dx=e.clientX;dy=e.clientY;
     sx=parseInt(div.style.left)||0;sy=parseInt(div.style.top)||0;
     moved=false;
+    div.style.zIndex='50';
     const onMove=ev=>{
       const ddx=(ev.clientX-dx)/sbView.scale, ddy=(ev.clientY-dy)/sbView.scale;
       if(Math.abs(ddx)>2||Math.abs(ddy)>2) moved=true;
@@ -2833,9 +2911,47 @@ function sbMakeDraggable(div,type,item){
     const onUp=()=>{
       window.removeEventListener('mousemove',onMove);
       window.removeEventListener('mouseup',onUp);
+      div.style.zIndex='';
       if(moved){
-        if(!state.sbPositions) state.sbPositions={};
-        state.sbPositions[type+'_'+item.id]={x:parseInt(div.style.left),y:parseInt(div.style.top)};
+        // Find drop position in canvas coords
+        const wrap=document.getElementById('sb-canvas-wrap');
+        const r=wrap.getBoundingClientRect();
+        const dropX=parseInt(div.style.left);
+        const dropY=parseInt(div.style.top);
+
+        // Determine insert position in grid
+        const vType=sbFindVesselAt(dropX,dropY)||type;
+        if(!state.sbOrder) state.sbOrder={};
+        let order=state.sbOrder[vType]||(sbData()[vType]||[]).map(i=>i.id);
+
+        // Remove from old position
+        const oldOrder=state.sbOrder[type]||(sbData()[type]||[]).map(i=>i.id);
+        const oldIdx=oldOrder.indexOf(item.id);
+        if(oldIdx>-1) oldOrder.splice(oldIdx,1);
+        state.sbOrder[type]=oldOrder;
+
+        if(vType===type){
+          // Same vessel: find nearest grid slot
+          const vEl=sbVesselEls[vType];
+          const dim=SB_CARD_DIMS[vType]||{w:180,h:52,gap:5};
+          const HDR=28,PAD=10;
+          const vx=parseInt(vEl.style.left),vy=parseInt(vEl.style.top),vw=parseInt(vEl.style.width);
+          const innerW=vw-2*PAD;
+          const cols=Math.max(1,Math.floor((innerW+dim.gap)/(dim.w+dim.gap)));
+          const relX=dropX-vx-PAD, relY=dropY-vy-HDR-PAD;
+          const col=Math.max(0,Math.min(cols-1,Math.round(relX/(dim.w+dim.gap))));
+          const row=Math.max(0,Math.round(relY/(dim.h+dim.gap)));
+          const newIdx=Math.min(row*cols+col,order.length);
+          order.splice(newIdx,0,item.id);
+          state.sbOrder[vType]=order;
+        } else {
+          // Different vessel — just append
+          order.push(item.id);
+          state.sbOrder[vType]=order;
+        }
+
+        sbReflowVessel(type);
+        if(vType!==type) sbReflowVessel(vType);
         scheduleSave();
       } else {
         openSBItem(type,item,div);
@@ -2854,6 +2970,7 @@ function sbMakeCard(canvas,type,item,x,y){
   const cx=pos?pos.x:x, cy=pos?pos.y:y;
   const div=document.createElement('div');
   div.className='sb-card';
+  div.dataset.sbId=item.id;
   div.style.cssText=`left:${cx}px;top:${cy}px;width:${d.w}px;`;
 
   // title
@@ -3004,6 +3121,28 @@ function renderSBCanvas(){
   applySBView();
 }
 
+// ── Cross-link helpers ──
+function sbSlug(item){ return item.filename.replace('.md',''); }
+function sbFindColab(slug){
+  return (sbData().colaboradores||[]).find(c=>sbSlug(c)===slug);
+}
+function sbFindLinked(colabSlug){
+  const d=sbData();
+  const cursos=(d.cursos||[]).filter(c=>c.professor===colabSlug);
+  const aulas=(d['aulas-abertas']||[]).filter(a=>a.convidado===colabSlug);
+  const trans=(d.transcricoes||[]).filter(t=>t.convidado===colabSlug||t.professor===colabSlug);
+  return {cursos,aulas,trans};
+}
+function sbCrosslinkHTML(label,items,type){
+  if(!items.length) return '';
+  let h=`<div class="sb-field-label">${label}</div><div class="sb-field-val">`;
+  items.forEach(it=>{
+    const name=it.titulo||it.nome||it.title||it.filename.replace('.md','');
+    h+=`<span class="sb-crosslink" data-sb-type="${type}" data-sb-id="${it.id}">${name}</span>`;
+  });
+  return h+'</div>';
+}
+
 // ── Item popup ──
 function openSBItem(type,item,cardEl){
   sbActiveItem={type,item};
@@ -3020,14 +3159,45 @@ function openSBItem(type,item,cardEl){
   fields.forEach(([k,v])=>{
     if(!v||v==='') return;
     const val=Array.isArray(v)?v.join(', '):String(v);
+    // Make professor/convidado fields clickable
+    if((k==='professor'||k==='convidado')&&typeof v==='string'){
+      const colab=sbFindColab(v);
+      if(colab){
+        html+=`<div class="sb-field-label">${k.toUpperCase()}</div><div class="sb-field-val"><span class="sb-crosslink" data-sb-type="colaboradores" data-sb-id="${colab.id}">${colab.nome||v}</span></div>`;
+        return;
+      }
+    }
     html+=`<div class="sb-field-label">${k.toUpperCase()}</div><div class="sb-field-val">${val.replace(/</g,'&lt;')}</div>`;
   });
+
+  // Cross-links for colaboradores: show their cursos/aulas
+  if(type==='colaboradores'){
+    const slug=sbSlug(item);
+    const linked=sbFindLinked(slug);
+    html+=sbCrosslinkHTML('CURSOS',linked.cursos,'cursos');
+    html+=sbCrosslinkHTML('AULAS ABERTAS',linked.aulas,'aulas-abertas');
+    html+=sbCrosslinkHTML('TRANSCRIÇÕES',linked.trans,'transcricoes');
+  }
 
   // Body preview
   if(item._body){
     html+=`<div class="sb-body-preview">${item._body.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>`;
   }
   body.innerHTML=html;
+
+  // Wire crosslink clicks
+  body.querySelectorAll('.sb-crosslink').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      const t=el.dataset.sbType, id=el.dataset.sbId;
+      const items=sbData()[t]||[];
+      const target=items.find(i=>i.id===id);
+      if(target){
+        const card=document.querySelector(`.sb-card[data-sb-id="${id}"]`);
+        openSBItem(t,target,card||cardEl);
+      }
+    });
+  });
 
   // GitHub link
   const cfg=sbCfg();
