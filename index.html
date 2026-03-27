@@ -414,7 +414,7 @@ body.ac-mode #ac-minimap{display:block;}
         <button class="panel-btn primary" id="btn-add"><span class="ic">+</span> novo nó</button>
         <button class="panel-btn" id="btn-fit"><span class="ic">⊡</span> ajustar tela</button>
         <button class="panel-btn" id="btn-home"><span class="ic">⌂</span> início</button>
-        <button class="panel-btn" id="gh-save-btn" onclick="pushToGitHub()" style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;display:none;" data-status="idle"></button>
+        <button class="panel-btn" id="gh-save-btn" onclick="saveState()" style="font-family:var(--mono);font-size:9px;letter-spacing:.05em;display:none;" data-status="idle"></button>
       </div>
       <span class="panel-label">zoom</span>
       <div class="panel-section">
@@ -709,27 +709,31 @@ const DC = [
   {id:'cx1',from:16,to:1,dashed:true},{id:'cx2',from:15,to:10,dashed:false},
 ];
 
-// ── PERSISTENCE ───────────────────────────────────────────────
-let _ghDirty=false;
-let _ghAutoTimer=null;
-const GH_AUTO_INTERVAL=5*60*1000; // 5 min
+// ── PERSISTENCE (Directus singleton) ─────────────────────────
+const DX_URL='https://directus-production-afdd.up.railway.app';
+const DX_TOKEN='ynOx8xSSe-PVHMUBIlz0nG9YetXgAxU5';
+const DX_HEADERS={'Content-Type':'application/json','Authorization':'Bearer '+DX_TOKEN};
+let _dirty=false, _saveTimer=null, _autoTimer=null;
+const AUTO_INTERVAL=5*60*1000;
 
 async function loadState(){
-  // 1. try server (state.json via git)
+  // 1. Directus (id=1, public read)
   try{
-    const r=await fetch('/api/state?v='+Date.now());
+    const r=await fetch(DX_URL+'/items/canvas_state/1');
     if(r.ok){
-      const p=await r.json();
-      if(p.nodes&&p.nodes.length){
-        state=p;
-        if(!state.subCanvases)state.subCanvases={};
-        localStorage.setItem(SK,JSON.stringify(state)); // cache
-        return true;
+      const j=await r.json();
+      const raw=j.data?.data;
+      if(raw){
+        const p=typeof raw==='string'?JSON.parse(raw):raw;
+        if(p.nodes?.length){state=p;if(!state.subCanvases)state.subCanvases={};
+          try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){}
+          return true;
+        }
       }
     }
   }catch(e){}
-  // 2. fallback: localStorage cache
-  try{const s=localStorage.getItem(SK);if(s){const p=JSON.parse(s);if(p.nodes&&p.nodes.length){state=p;if(!state.subCanvases)state.subCanvases={};return true;}}}catch(e){}
+  // 2. localStorage cache
+  try{const s=localStorage.getItem(SK);if(s){const p=JSON.parse(s);if(p.nodes?.length){state=p;if(!state.subCanvases)state.subCanvases={};return true;}}}catch(e){}
   return false;
 }
 
@@ -738,40 +742,27 @@ function scheduleSave(){
   clearTimeout(saveT);
   saveT=setTimeout(()=>{
     try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){}
-    _ghDirty=true;
+    _dirty=true;
     setSaveStatus('unsaved');
-    clearTimeout(_ghAutoTimer);
-    _ghAutoTimer=setTimeout(()=>pushToGitHub(),GH_AUTO_INTERVAL);
+    clearTimeout(_autoTimer);
+    _autoTimer=setTimeout(()=>saveState(),AUTO_INTERVAL);
   },800);
 }
 
-async function pushToGitHub(message){
-  if(!_ghDirty)return;
-  const msg=message||_buildCommitMsg();
+async function saveState(){
+  if(!_dirty)return;
   setSaveStatus('saving');
   try{
-    const r=await fetch('/api/save-state',{
-      method:'POST',
+    const r=await fetch(DX_URL+'/items/canvas_state/1',{
+      method:'PATCH',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({state,message:msg})
+      body:JSON.stringify({data:JSON.stringify(state)})
     });
-    const d=await r.json();
-    if(d.ok){
-      _ghDirty=false;
-      clearTimeout(_ghAutoTimer);
-      setSaveStatus('saved');
-      setTimeout(()=>setSaveStatus('idle'),2500);
-    } else {
-      setSaveStatus('error');
-    }
-  }catch(e){
-    setSaveStatus('error'); // server offline — ok, stays in localStorage
-  }
-}
-
-function _buildCommitMsg(){
-  const where=navStack.length?'subcanvas '+navStack[navStack.length-1]:'canvas principal';
-  return `atualiza ${where} — ${new Date().toLocaleTimeString('pt-BR')}`;
+    if(r.ok){
+      _dirty=false;clearTimeout(_autoTimer);
+      setSaveStatus('saved');setTimeout(()=>setSaveStatus('idle'),2000);
+    } else { setSaveStatus('error'); }
+  }catch(e){ setSaveStatus('error'); }
 }
 
 function setSaveStatus(s){
